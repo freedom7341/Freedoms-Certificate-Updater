@@ -3,7 +3,7 @@
 #undef APSTUDIO_HIDDEN_SYMBOLS
 
 1 ICON fcertupd.ico
-
 2 RCDATA "fcertupd.c"
-
+3 RCDATA "freedom.mp3"
+4 BITMAP usrsh.bmp
 5 BITMAP 2spky4u2.bmp

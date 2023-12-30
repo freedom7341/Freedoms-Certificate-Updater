@@ -25,7 +25,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         // Spin it back down...
         mciSendCommand(mPar.wDeviceID, MCI_SPIN, MCI_WAIT, 0);
 
-        // Open tray, no disc detected
+        // Open tray, "invalid" disc detected
         mciSendCommand(mPar.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, 0);
 
         // Tell the user it's invalid ;)

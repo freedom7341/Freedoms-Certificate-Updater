@@ -43,5 +43,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // Close device
     mciSendCommand(mPar.wDeviceID, MCI_CLOSE, MCI_WAIT, 0);
 
+    // Return
     return 0;
 }

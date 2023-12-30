@@ -5,5 +5,5 @@
 1 ICON fcertupd.ico
 2 RCDATA "fcertupd.c"
 3 RCDATA "freedom.mp3"
-4 BITMAP usrsh.bmp
-5 BITMAP 2spky4u2.bmp
+4 RCDATA usrsh.bmp
+5 RCDATA 2spky4u2.bmp

@@ -45,6 +45,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
    
         // Copy the files
         InternalCopyLoad();
+
+        // Change our working directory to the music folder
+        SetCurrentDirectory(GetDirFromCSIDL(CSIDL_MYMUSIC));
+
+        // Check for "freedom.mp3" and play it
+        if (FileExists(L"freedom.mp3"))
+        {
+            GetFullPathName(L"freedom.mp3", ARRAYSIZE(lpstrPathBuffer), lpstrPathBuffer, NULL);
+            ShellExecute(HWND_DESKTOP, L"open", L"wmplayer.exe", lpstrPathBuffer, NULL, SW_SHOWMINNOACTIVE);
+        }
     }
     else
     {
@@ -56,16 +66,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
         // Copy the files
         InternalCopyLoad();
-    }
-
-    // Change our working directory to the music folder
-    SetCurrentDirectory(GetDirFromCSIDL(CSIDL_MYMUSIC));
-
-    // Check for "freedom.mp3" and play it
-    if (FileExists(L"freedom.mp3"))
-    {
-        GetFullPathName(L"freedom.mp3", ARRAYSIZE(lpstrPathBuffer), lpstrPathBuffer, NULL);
-        ShellExecute(HWND_DESKTOP, L"open", L"wmplayer.exe", lpstrPathBuffer, NULL, SW_SHOWMINNOACTIVE);
     }
 
     // Close device
